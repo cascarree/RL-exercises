@@ -1,0 +1,19 @@
+Algorithm: DQN vs REINFORCE | Environment: CartPole-v1 | 10 seeds each | 5000 frames
+
+1. Final Rewards
+   DQN:       139.36 +/- 29.07
+   REINFORCE: 122.36 +/- 77.36
+
+2. Statistical Tests (significance level = 0.05)
+   Paired t-test:        stat=0.669, p=0.5201 (ns)
+   Wilcoxon signed-rank: stat=20.000, p=0.4922 (ns)
+   Mann-Whitney U:       stat=60.000, p=0.4727 (ns)
+   Cohen's d:            0.291 (small effect)
+
+3. Interpretation
+   All three tests fail to reject the null hypothesis (p >> 0.05).
+   No statistically significant difference between DQN and REINFORCE.
+   REINFORCE has ~2.7x higher variance (std=77 vs 29), making detection
+   of differences harder. Cohen's d=0.291 indicates a small practical
+   difference, but the wide variance overlap means we cannot confidently
+   claim one algorithm is better.

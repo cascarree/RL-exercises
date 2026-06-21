@@ -1,0 +1,38 @@
+Algorithm: DQN | Environment: CartPole-v1 | 5000 frames per seed
+
+1. IQM, Mean, Median Rewards Over Time (final values)
+
+   Group            Seeds   IQM     Mean    Median
+   sequential_low   3       145.73  145.73  138.60
+   sparse_low       3       120.23  120.23  126.40
+   powers_of_2      3       131.00  131.00  138.60
+   medium_10        10      148.28  146.98  147.70
+   large_30         30      153.35  154.29  154.00
+
+2. Standard Error, Standard Deviation, 95% CI
+
+   Group            Seeds   Std     SE      95% CI (approx)
+   sequential_low   3       19.37   11.18   [123.8, 167.7]
+   sparse_low       3        9.44    5.45   [109.5, 130.9]
+   powers_of_2      3       37.13   21.44   [89.0, 173.0]
+   medium_10        10      30.82    9.75   [129.2, 167.4]
+   large_30         30      39.96    7.30   [139.1, 167.6]
+
+3. Disparate Seed Sets (3 seeds each)
+
+   Different seed sets give different conclusions:
+   - sequential [0,1,2]:   IQM = 145.73
+   - sparse [0,100,200]:   IQM = 120.23
+   - powers-of-2 [1,2,4]:  IQM = 131.00
+
+   The estimated performance swings by 21 ish % depending on which 3 seeds
+   are chosen. With few seeds, results are dominated by seed selection
+   rather than algorithm quality.
+
+4. Influence of Number of Seeds and Metrics
+
+   - IQM equals Mean at low seed counts (degenerates with <5 seeds).
+   - With more seeds, IQM and Median are more robust to outliers than Mean.
+   - SE shrinks with more seeds (11.18 -> 9.75 -> 7.30), improving
+     estimate precision. Std stays high, reflecting real variability.
+   - 30 seeds gives a much tighter CI than 3 seeds, but costs much more.
