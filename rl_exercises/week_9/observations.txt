@@ -1,0 +1,57 @@
+1.1 Sample Efficiency
+
+Q1. How many steps sooner does Dyna-PPO reach 80% of the final PPO return?
+
+Dyna-PPO did not reach the target sooner. Instead, it required
+approximately 2,000 additional real environment steps.
+
+-   PPO reached 80% of its final return at 8,000 steps.
+-   Dyna-PPO reached the same performance level at 10,000 steps.
+
+Dyna-PPO was approximately 2k steps slower than PPO under the
+15k-step training budget.
+
+Q2. Is there an initial “model learning penalty”?
+
+Yes.
+
+During the first 3,000 environment steps, Dyna-PPO consistently
+underperformed PPO.
+
+-   PPO average return: 40.5
+-   Dyna-PPO average return: 35.3
+
+This indicates an initial model learning penalty, where inaccurate
+imagined transitions slow policy learning.
+
+1.2 Model Prediction Accuracy
+
+Q1. Around what MSE threshold does Dyna-PPO begin to outperform PPO?
+
+The one-step prediction error remained essentially zero (MSE ≈ 0.0000)
+throughout training. No meaningful MSE threshold could be identified at
+which Dyna-PPO began outperforming PPO.
+
+Instead, the slight improvement after approximately 8,000 real
+environment steps appears to result from a more diverse replay buffer
+rather than lower one-step prediction error.
+
+Q2. How fast does E_k grow, and how does that inform imag_horizon?
+
+The multi-step prediction error increased rapidly due to compounding
+errors.
+
+-   E5 ≈ 0.50
+-   E10 ≈ 2.72 (5.4× increase)
+
+These results suggest using an imagination horizon of 3–5 steps and
+avoiding horizons of 10 or more.
+
+Overall Conclusions:
+
+Dyna-PPO achieved a slightly higher final return (200.6 vs. 196.3), but
+learned more slowly and showed only a modest (≈2.2%) improvement on
+CartPole-v1. One-step prediction accuracy was excellent throughout
+training, while multi-step prediction errors accumulated rapidly,
+limiting the usefulness of long imagined rollouts. Overall, CartPole is
+too simple to demonstrate a significant advantage from Dyna-PPO.
