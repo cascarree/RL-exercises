@@ -1,0 +1,20 @@
+How Well Does HPO Generalize in RL?
+
+So I ran random search with 20 trials over 7 PPO hyperparameters on CartPole-v1. The best config I found got around 260 return, which seemed pretty good. The hyperparameters were lr_actor around 0.0025, clip_eps around 0.17, epochs=6, batch_size around 50, ent_coef around 0.012, and hidden_size=112.
+When I tested the best config across different seeds, the results were all over the place. Some seeds gave returns in the 150 range while others went up to 280. So even just changing the seed makes a pretty big difference.
+The bigger issue was when I tried to use the CartPole-optimized config on other environments. On Acrobot it got -500 and on MountainCar it got -200. So basically it completely failed on anything other than CartPole. I also tried optimizing separately for each environment and then cross-testing. The results were asymmetric too - like a MountainCar config actually scored 225 on CartPole, but the CartPole config still failed on MountainCar. So yeah, HPO results don't really transfer across different environments, which makes sense I guess since the dynamics are so different.
+
+Multi-fidelity in RL
+
+For this part I compared running HPO with a full budget of 10k steps versus a multi-fidelity approach where I trained everything for 3k steps first, then only promoted the top 50% to the full budget.
+The full budget best was 40.0 and median was 19.0. The multi-fidelity approach got the same best of 40.0 and median of 19.0. So at first glance it looks like multi-fidelity worked just as well while using less compute.
+But here's the interesting part - when I looked at which configs did well at the checkpoint vs at the end, there was basically no correlation. The config that had the best checkpoint score of 40.7 ended up only getting 16.2 in the end, which is a huge drop. Meanwhile one of the lower checkpoint configs with 24.3 ended up being the best at 40.0 at the end. So early performance doesn't really predict final performance in RL, which I think is because learning curves in RL can be really non-monotonic - sometimes the policy gets worse before it gets better.
+The takeaway is that multi-fidelity can save compute by pruning half the configs early, but you might accidentally throw out configs that would have been great if given more time. It's a tradeoff between speed and not missing out on late bloomers.
+
+Plots:
+- hpo_trial_scores.png: Random search trial scores (sorted)
+- seed_generalization.png: Best config performance across 5 seeds
+- cross_env_generalization.png: Cross-environment HPO transfer heatmap
+- checkpoint_vs_final.png: Checkpoint return vs final return scatter
+- full_vs_multifidelity.png: Full budget vs multi-fidelity comparison
+- rank_correlation.png: Checkpoint rank vs final rank (does early rank predict final?)
